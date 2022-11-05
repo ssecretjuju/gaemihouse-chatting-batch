@@ -1,0 +1,30 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@metaverse.ohgiraffers.com:1521/xe
+    username: C##GAEMIHOUSE
+    password: GAEMIHOUSE
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/chatting
+    batch:
+      job:
+        # 애플리케이션 실행 시 배치 작업 실행 방지
+        enabled: false
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: true
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    generate-ddl: false
+    database: oracle
