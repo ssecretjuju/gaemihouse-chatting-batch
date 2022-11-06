@@ -5,30 +5,22 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.listener.ExecutionContextPromotionListener;
-import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import secretjuju.gaemihouse.gaemihousechattingbatch.mongo_db.model.ChattingLog;
-import secretjuju.gaemihouse.gaemihousechattingbatch.mongo_db.service.ChattingLogSerivce;
+import secretjuju.gaemihouse.gaemihousechattingbatch.chatting_log.model.ChattingLog;
+import secretjuju.gaemihouse.gaemihousechattingbatch.chatting_log.service.ChattingLogSerivce;
 
 import javax.persistence.EntityManagerFactory;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
@@ -57,7 +49,8 @@ public class JobConfig {
         return jobBuilderFactory.get(BATCH_NAME)
                 .start(firstStep())
                 .next(secondStep())
-
+                .next(thirdStep())
+                .next(fourthStep())
                 .build();
     }
 
@@ -113,5 +106,27 @@ public class JobConfig {
 
     }
 
+    @Bean
+    public Step thirdStep() {
+        return stepBuilderFactory.get(BATCH_NAME + "thirdStep")
+                .tasklet((StepContribution, chunkContext) -> {
+                    System.out.println("3. 응답 데이터 Oracle DB에 저장");
+                    chattingService.save(keywords);
+                    return RepeatStatus.FINISHED;
+                })
+                .build();
 
+    }
+
+    @Bean
+    public Step fourthStep() {
+        return stepBuilderFactory.get(BATCH_NAME + "thirdStep")
+                .tasklet((StepContribution, chunkContext) -> {
+                    System.out.println("4. Oracle DB 저장 성공 시 24시간 동안 발생한 채팅 로그 삭제");
+
+                    return RepeatStatus.FINISHED;
+                })
+                .build();
+
+    }
 }

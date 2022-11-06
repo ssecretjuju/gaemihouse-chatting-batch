@@ -1,4 +1,4 @@
-package secretjuju.gaemihouse.gaemihousechattingbatch.mongo_db.model;
+package secretjuju.gaemihouse.gaemihousechattingbatch.chatting_log.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
