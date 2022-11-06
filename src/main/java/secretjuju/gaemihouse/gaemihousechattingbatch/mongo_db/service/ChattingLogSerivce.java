@@ -3,7 +3,10 @@ package secretjuju.gaemihouse.gaemihousechattingbatch.mongo_db.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import secretjuju.gaemihouse.gaemihousechattingbatch.mongo_db.model.ChattingLog;
 import secretjuju.gaemihouse.gaemihousechattingbatch.mongo_db.repository.ChattingLogRepository;
+
+import java.util.List;
 
 @Service
 public class ChattingLogSerivce {
@@ -14,19 +17,13 @@ public class ChattingLogSerivce {
         this.chattingLogRepository = chattingLogRepository;
     }
 
-    public String selectChattingLogs() {
+    public List<ChattingLog> selectChattingLogs() {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        try {
-            if(chattingLogRepository.findAll() == null) {
-                return "There are no logs.";
-            } else {
-                return objectMapper.writeValueAsString(chattingLogRepository.findAll());
-            }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return "Error";
+        if(chattingLogRepository.findAll() == null) {
+            System.out.println("There are no logs.");
+            return null;
+        } else {
+            return chattingLogRepository.findAll();
         }
     }
 }
